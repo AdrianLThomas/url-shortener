@@ -3,5 +3,3 @@ CREATE TABLE `urls` (
 	`short` text NOT NULL,
 	`long` text NOT NULL
 );
---> statement-breakpoint
-DROP TABLE `users`;

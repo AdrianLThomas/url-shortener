@@ -1,11 +1,11 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "5dfbe12f-d212-420f-8679-3ac72d51673b",
+  "id": "c7d4fd2e-7fb1-4d63-994b-df46a1bed9b0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "users": {
-      "name": "users",
+    "urls": {
+      "name": "urls",
       "columns": {
         "id": {
           "name": "id",
@@ -14,15 +14,15 @@
           "notNull": true,
           "autoincrement": false
         },
-        "name": {
-          "name": "name",
+        "short": {
+          "name": "short",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "email": {
-          "name": "email",
+        "long": {
+          "name": "long",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
