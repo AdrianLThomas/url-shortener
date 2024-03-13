@@ -10,14 +10,11 @@ export default {
 		const db = drizzle(env.DB);
 		const method = request.method;
 
-		if (
-			method === 'POST' &&
-			pathname === '/api/shorten'
-		) {
+		if (method === 'POST' && pathname === '/api/shorten') {
 			const longUrl = searchParams.get('url')!;
 
 			if (!longUrl) {
-				return new Response('Missing url', { status: 400 })
+				return new Response('Missing url', { status: 400 });
 			}
 
 			// hash it
