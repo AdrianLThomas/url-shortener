@@ -34,7 +34,7 @@ export default {
 				})
 				.run();
 
-			return Response.json({ message: shortUrl });
+			return Response.json({ shortUrl });
 		}
 
 		return new Response('Not found', { status: 404 });
