@@ -11,12 +11,20 @@ export default {
 		const method = request.method;
 
 		if (method === 'POST' && pathname === '/api/shorten') {
-			const longUrl = searchParams.get('url')!;
+			const urlParam = searchParams.get('url');
 
-			if (!longUrl) {
-				return new Response('Missing url', { status: 400 });
+			if (!urlParam) {
+				return new Response('Invalid url', { status: 400 });
 			}
-
+			let longUrl = ""
+			
+			// convert to a string - TODO introduce Joi or Zod for validation
+			try {
+				longUrl = new URL(urlParam).toString();
+			} catch (e) {
+				return new Response('Invalid url', { status: 400 });
+			}
+			
 			// hash it
 			const hashBuffer = await crypto.subtle.digest('MD5', new TextEncoder().encode(longUrl));
 			const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
@@ -31,7 +39,7 @@ export default {
 			await db
 				.insert(urls)
 				.values({
-					long: longUrl,
+					long: longUrl.toString(),
 					short: shortUrl,
 				})
 				.run();

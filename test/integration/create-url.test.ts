@@ -21,7 +21,7 @@ describe('Worker', () => {
 		const text = await resp.json();
 
 		expect(text).toEqual({
-			shortUrl: 'Yzk4NG',
+			shortUrl: 'MTgyY2',
 		});
 		expect(resp.status).toBe(200);
 	});
@@ -34,8 +34,22 @@ describe('Worker', () => {
 		expect(resp.status).toBe(400);
 	});
 
-	// should return 400 for null url
-	// should return 400 for invalid url
+	it('should return 400 for null url', async () => {
+		const resp = await worker.fetch('/api/shorten?url=', {
+			method: 'POST',
+		});
+
+		expect(resp.status).toBe(400);
+	});
+	
+	it('should return 400 for invalid url', async () => {
+		const resp = await worker.fetch('/api/shorten?url=woop', {
+			method: 'POST',
+		});
+
+		expect(resp.status).toBe(400);
+	});
+
 	// should return the same url if it is already shortened (x2 times)
 	// should return a shortened url for a very long url
 	// should return a shortened url for a url with special characters
