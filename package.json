@@ -10,8 +10,8 @@
 		"d1:init": "npx wrangler d1 execute prod-d1-tutorial --local --file=./drizzle/0001_young_randall.sql",
 		"db:generate": "drizzle-kit generate:sqlite --schema=src/schema.ts",
 		"test": "jest",
-    "lint:check": "npx prettier --check .",
-    "lint:fix": "npx prettier --write ."
+		"lint:check": "npx prettier --check .",
+		"lint:fix": "npx prettier --write ."
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20240222.0",
