@@ -19,12 +19,22 @@ describe('Worker', () => {
 			method: 'POST',
 		});
 		const text = await resp.json();
+
 		expect(text).toEqual({
 			shortUrl: 'Yzk4NG',
 		});
+		expect(resp.status).toBe(200);
 	});
 
-	// should return 400 for missing url
+	it('should return 400 for missing url', async () => {
+		const resp = await worker.fetch('/api/shorten', {
+			method: 'POST',
+		});
+
+		expect(resp.status).toBe(400);
+	});
+
+	// should return 400 for null url
 	// should return 400 for invalid url
 	// should return the same url if it is already shortened (x2 times)
 	// should return a shortened url for a very long url

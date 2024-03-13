@@ -8,13 +8,18 @@ export default {
 	async fetch(request: Request, env: Env) {
 		const { pathname, searchParams } = new URL(request.url);
 		const db = drizzle(env.DB);
-		const longUrl = searchParams.get('url')!;
 		const method = request.method;
 
 		if (
-			//method === 'POST' &&
+			method === 'POST' &&
 			pathname === '/api/shorten'
 		) {
+			const longUrl = searchParams.get('url')!;
+
+			if (!longUrl) {
+				return new Response('Missing url', { status: 400 })
+			}
+
 			// hash it
 			const hashBuffer = await crypto.subtle.digest('MD5', new TextEncoder().encode(longUrl));
 			const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
