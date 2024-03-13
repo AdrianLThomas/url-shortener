@@ -1,4 +1,4 @@
-name = "d1-tutorial"
+name = "url-shortener"
 main = "src/index.ts"
 compatibility_date = "2024-03-04"
 
@@ -53,5 +53,5 @@ compatibility_date = "2024-03-04"
 
 [[d1_databases]]
 binding = "DB" # i.e. available in your Worker on env.DB
-database_name = "prod-d1-tutorial"
-database_id = "09aa0f6d-159f-462a-83fd-853765a23bb1"
+database_name = "url-shortener"
+database_id = "99821c73-c638-413e-bc5d-a1364429ff68"
