@@ -1,0 +1,8 @@
+name: Lint
+on: [push]
+
+jobs:
+  run-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm run lint:check
