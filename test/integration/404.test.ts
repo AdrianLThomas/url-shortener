@@ -15,7 +15,9 @@ describe('Worker', () => {
 	});
 
 	it('should return a 404 for an invalid route', async () => {
-		const resp = await worker.fetch();
+		const resp = await worker.fetch('some-rubbish', {
+			method: 'GET',
+		});
 		const text = await resp.text();
 		expect(text).toMatchInlineSnapshot(`"Not found"`);
 	});

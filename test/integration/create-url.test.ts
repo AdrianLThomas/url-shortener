@@ -20,7 +20,7 @@ describe('Worker', () => {
 		});
 		const text = await resp.json();
 		expect(text).toEqual({
-			shortUrl: 'Yzk4NG'
-		})
+			shortUrl: 'Yzk4NG',
+		});
 	});
 });
