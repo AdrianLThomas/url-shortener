@@ -2,6 +2,7 @@ import { drizzle } from 'drizzle-orm/d1';
 import { z } from 'zod';
 import { shortenUrl } from './shorten-url';
 import { urls } from './db/schema';
+import { eq } from 'drizzle-orm';
 
 export interface Env {
 	DB: D1Database;
@@ -16,12 +17,23 @@ export default {
 		const method = request.method;
 
 		const validatedUrl = await URL_SCHEMA.safeParseAsync(searchParams.get('url'));
-		if (method === 'POST' && pathname === '/api/shorten') {
-			const isValidUrl = validatedUrl.success;
-			if (!isValidUrl) {
-				return new Response('Invalid url', { status: 400 });
+
+		const isValidUrl = validatedUrl.success;
+		if (!isValidUrl) {
+			return new Response('Invalid url', { status: 400 });
+		}
+
+		// TODO refactor routing
+		if (method === 'GET' && pathname === '/api/redirect') {
+			const [record] = await db.select().from(urls).where(eq(urls.short, validatedUrl.data))
+			
+			if (!record) {
+				return new Response('Not found', { status: 404 }); // TODO refactor for consistent responses
 			}
 
+			return Response.redirect(record.long, 301);
+		}
+		else if (method === 'POST' && pathname === '/api/shorten') {
 			try {
 				const longUrl = new URL(validatedUrl.data).toString();
 				const shortUrl = await shortenUrl(longUrl);
