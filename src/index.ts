@@ -9,7 +9,6 @@ export default {
 		const { pathname, searchParams } = new URL(request.url);
 		const db = drizzle(env.DB);
 		const method = request.method;
-
 		if (method === 'POST' && pathname === '/api/shorten') {
 			const urlParam = searchParams.get('url');
 

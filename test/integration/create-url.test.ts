@@ -6,9 +6,9 @@ describe('Worker', () => {
 	let worker: UnstableDevWorker;
 
 	const shortenUrl = async (url: string = 'https://example.com') =>
-	await worker.fetch(`/api/shorten?url=${url}`, {
-		method: 'POST',
-	});
+		await worker.fetch(`/api/shorten?url=${url}`, {
+			method: 'POST',
+		});
 
 	beforeAll(async () => {
 		worker = await unstable_dev('src/index.ts', {
@@ -31,7 +31,7 @@ describe('Worker', () => {
 	});
 
 	it('should return 400 for missing url', async () => {
-		const resp =  await worker.fetch('/api/shorten', {
+		const resp = await worker.fetch('/api/shorten', {
 			method: 'POST',
 		});
 
@@ -56,17 +56,10 @@ describe('Worker', () => {
 		expect(first.json()).toEqual(second.json());
 	});
 
-	// it.only('should only store a url once if already shortened', async () => {
-	// 	const db = drizzle(env.DB);
-
-	// 	const [first, second] = await Promise.all([shortenUrl(), shortenUrl()]);
-
-	// 	expect(first.json()).toEqual(second.json());
-	// 	// TODO check db & assert
-	// });
-
 	it('should return a shortened url for a very long url', async () => {
-		const resp = await shortenUrl('https://example-example-example-example-example-example-example-example-example-example-example-example-example-example.com?somequerystring=onetwothree&another=fourfivesixseveneight');
+		const resp = await shortenUrl(
+			'https://example-example-example-example-example-example-example-example-example-example-example-example-example-example.com?somequerystring=onetwothree&another=fourfivesixseveneight',
+		);
 		const text = await resp.json();
 
 		expect(text).toEqual({
