@@ -29,9 +29,10 @@ export default {
 				await db
 					.insert(urls)
 					.values({
-						long: longUrl.toString(),
+						long: longUrl,
 						short: shortUrl,
 					})
+					.onConflictDoNothing()
 					.run();
 
 				return Response.json({ shortUrl });
