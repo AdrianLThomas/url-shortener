@@ -1,4 +1,3 @@
-import { drizzle } from 'drizzle-orm/d1';
 import { unstable_dev } from 'wrangler';
 import { UnstableDevWorker } from 'wrangler';
 
@@ -46,7 +45,6 @@ describe('Worker', () => {
 
 	it('should return 400 for invalid url', async () => {
 		const resp = await shortenUrl('woop');
-
 		expect(resp.status).toBe(400);
 	});
 

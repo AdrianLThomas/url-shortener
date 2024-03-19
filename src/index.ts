@@ -1,49 +1,52 @@
-import { drizzle } from 'drizzle-orm/d1';
-import { urls } from './schema';
+import { DrizzleD1Database, drizzle } from 'drizzle-orm/d1';
+import { urls } from './db/schema';
+import Joi from 'joi';
+
 export interface Env {
 	DB: D1Database;
 }
+
+const URL_SCHEMA = Joi.string().uri({ scheme: ['http', 'https'] });
+
+const shortenUrl = async (url: string, db: DrizzleD1Database) => {
+	const longUrl = new URL(url).toString();
+	const hashBuffer = await crypto.subtle.digest('MD5', new TextEncoder().encode(longUrl));
+	const hashArray = Array.from(new Uint8Array(hashBuffer));
+	const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+	const b64 = btoa(hashHex);
+	const shortUrl = b64.slice(0, 6);
+
+	await db
+		.insert(urls)
+		.values({
+			long: longUrl.toString(),
+			short: shortUrl,
+		})
+		.run();
+
+	return shortUrl;
+};
 
 export default {
 	async fetch(request: Request, env: Env) {
 		const { pathname, searchParams } = new URL(request.url);
 		const db = drizzle(env.DB);
 		const method = request.method;
+
+		const urlParam = searchParams.get('url')
 		if (method === 'POST' && pathname === '/api/shorten') {
-			const urlParam = searchParams.get('url');
-
-			if (!urlParam) {
+			const isValidUrl = urlParam && !URL_SCHEMA.validate(urlParam).error;
+			if (!isValidUrl) {
+				console.log('hey')
 				return new Response('Invalid url', { status: 400 });
 			}
-			let longUrl = '';
 
-			// convert to a string - TODO introduce Joi or Zod for validation
 			try {
-				longUrl = new URL(urlParam).toString();
+				const shortUrl = await shortenUrl(urlParam, db);
+				return Response.json({ shortUrl });
 			} catch (e) {
-				return new Response('Invalid url', { status: 400 });
+				return new Response('Server error', { status: 500 });
 			}
-
-			// hash it
-			const hashBuffer = await crypto.subtle.digest('MD5', new TextEncoder().encode(longUrl));
-			const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
-			const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
-
-			// to base 64
-			const b64 = btoa(hashHex);
-
-			// chop it up
-			const shortUrl = b64.slice(0, 6);
-
-			await db
-				.insert(urls)
-				.values({
-					long: longUrl.toString(),
-					short: shortUrl,
-				})
-				.run();
-
-			return Response.json({ shortUrl });
 		}
 
 		return new Response('Not found', { status: 404 });
