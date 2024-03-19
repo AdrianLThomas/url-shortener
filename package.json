@@ -9,7 +9,8 @@
 		"db:query": " npx wrangler d1 execute url-shortener --local --command='SELECT * FROM urls'",
 		"db:init": "npx wrangler d1 execute url-shortener --local --file=./drizzle/0000_nervous_satana.sql",
 		"db:generate": "drizzle-kit generate:sqlite --schema=src/schema.ts",
-		"test": "jest",
+		"test": "npm run test:integration",
+		"test:integration": "jest --runInBand",
 		"lint:check": "prettier --check . ; eslint .",
 		"lint:fix": "prettier --write . ; eslint . --fix"
 	},
