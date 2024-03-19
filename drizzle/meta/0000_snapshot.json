@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "c7d4fd2e-7fb1-4d63-994b-df46a1bed9b0",
+  "id": "2faa6e6e-6e40-4b2d-bb17-7fcd34216875",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "urls": {
@@ -29,7 +29,22 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "urls_short_unique": {
+          "name": "urls_short_unique",
+          "columns": [
+            "short"
+          ],
+          "isUnique": true
+        },
+        "urls_long_unique": {
+          "name": "urls_long_unique",
+          "columns": [
+            "long"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
