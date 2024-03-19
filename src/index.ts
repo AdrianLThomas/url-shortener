@@ -27,13 +27,13 @@ export default {
 				const shortUrl = await shortenUrl(longUrl);
 
 				await db
-				.insert(urls)
-				.values({
-					long: longUrl.toString(),
-					short: shortUrl,
-				})
-				.run();
-				
+					.insert(urls)
+					.values({
+						long: longUrl.toString(),
+						short: shortUrl,
+					})
+					.run();
+
 				return Response.json({ shortUrl });
 			} catch (e) {
 				return new Response('Server error', { status: 500 });

@@ -24,7 +24,7 @@ describe('Worker', () => {
 		const text = await resp.json();
 
 		expect(text).toEqual({
-			shortUrl: 'MTgyY2',
+			shortUrl: 'OTk2Zm',
 		});
 		expect(resp.status).toBe(200);
 	});
@@ -61,7 +61,7 @@ describe('Worker', () => {
 		const text = await resp.json();
 
 		expect(text).toEqual({
-			shortUrl: 'NjEyZT',
+			shortUrl: 'NDE5ND',
 		});
 		expect(resp.status).toBe(200);
 	});
