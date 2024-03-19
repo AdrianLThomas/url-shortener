@@ -1,12 +1,12 @@
 import { DrizzleD1Database, drizzle } from 'drizzle-orm/d1';
 import { urls } from './db/schema';
-import Joi from 'joi';
+import { z } from 'zod';
 
 export interface Env {
 	DB: D1Database;
 }
 
-const URL_SCHEMA = Joi.string().uri({ scheme: ['http', 'https'] });
+const URL_SCHEMA = z.string().url();
 
 const shortenUrl = async (url: string, db: DrizzleD1Database) => {
 	const longUrl = new URL(url).toString();
@@ -33,16 +33,15 @@ export default {
 		const db = drizzle(env.DB);
 		const method = request.method;
 
-		const urlParam = searchParams.get('url')
+		const validatedUrl = await URL_SCHEMA.safeParseAsync(searchParams.get('url'));
 		if (method === 'POST' && pathname === '/api/shorten') {
-			const isValidUrl = urlParam && !URL_SCHEMA.validate(urlParam).error;
+			const isValidUrl = validatedUrl.success;
 			if (!isValidUrl) {
-				console.log('hey')
 				return new Response('Invalid url', { status: 400 });
 			}
 
 			try {
-				const shortUrl = await shortenUrl(urlParam, db);
+				const shortUrl = await shortenUrl(validatedUrl.data, db);
 				return Response.json({ shortUrl });
 			} catch (e) {
 				return new Response('Server error', { status: 500 });

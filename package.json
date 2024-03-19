@@ -32,6 +32,6 @@
 	},
 	"dependencies": {
 		"drizzle-orm": "^0.29.4",
-		"joi": "^17.12.2"
+		"zod": "^3.22.4"
 	}
 }
