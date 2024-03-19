@@ -16,15 +16,15 @@ export default {
 			if (!urlParam) {
 				return new Response('Invalid url', { status: 400 });
 			}
-			let longUrl = ""
-			
+			let longUrl = '';
+
 			// convert to a string - TODO introduce Joi or Zod for validation
 			try {
 				longUrl = new URL(urlParam).toString();
 			} catch (e) {
 				return new Response('Invalid url', { status: 400 });
 			}
-			
+
 			// hash it
 			const hashBuffer = await crypto.subtle.digest('MD5', new TextEncoder().encode(longUrl));
 			const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
