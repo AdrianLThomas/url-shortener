@@ -6,7 +6,7 @@
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
-		"db:query": " npx wrangler d1 execute url-shortener --local --command='SELECT * FROM urls'",
+		"db:query": "npx wrangler d1 execute url-shortener --local --command='SELECT * FROM urls'",
 		"db:init": "npx wrangler d1 execute url-shortener --local --file=./drizzle/0000_handy_bishop.sql",
 		"db:generate": "drizzle-kit generate:sqlite --schema=src/db/schema.ts",
 		"test": "npm run test:unit && npm run test:integration",
