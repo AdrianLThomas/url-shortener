@@ -15,7 +15,7 @@ describe('Worker', () => {
 	});
 
 	it('should return a 404 for an invalid route', async () => {
-		const resp = await worker.fetch('some-rubbish', {
+		const resp = await worker.fetch('/api/shorten?url=http://some-rubbish.com', {
 			method: 'GET',
 		});
 		const text = await resp.text();

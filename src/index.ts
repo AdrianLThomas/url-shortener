@@ -1,13 +1,9 @@
 import { drizzle } from 'drizzle-orm/d1';
-import { z } from 'zod';
-import { shortenUrl } from './shorten-url';
-import { urls } from './db/schema';
+import routes from './http/routes';
 
 export interface Env {
 	DB: D1Database;
 }
-
-const URL_SCHEMA = z.string().url();
 
 export default {
 	async fetch(request: Request, env: Env) {
@@ -15,32 +11,6 @@ export default {
 		const db = drizzle(env.DB);
 		const method = request.method;
 
-		const validatedUrl = await URL_SCHEMA.safeParseAsync(searchParams.get('url'));
-		if (method === 'POST' && pathname === '/api/shorten') {
-			const isValidUrl = validatedUrl.success;
-			if (!isValidUrl) {
-				return new Response('Invalid url', { status: 400 });
-			}
-
-			try {
-				const longUrl = new URL(validatedUrl.data).toString();
-				const shortUrl = await shortenUrl(longUrl);
-
-				await db
-					.insert(urls)
-					.values({
-						long: longUrl,
-						short: shortUrl,
-					})
-					.onConflictDoNothing()
-					.run();
-
-				return Response.json({ shortUrl });
-			} catch (e) {
-				return new Response('Server error', { status: 500 });
-			}
-		}
-
-		return new Response('Not found', { status: 404 });
+		return await routes(method, pathname, searchParams, db);
 	},
 };
