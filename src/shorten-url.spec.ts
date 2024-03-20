@@ -13,7 +13,7 @@ describe('shortenUrl', () => {
 	it('should always return a string of length 6', async () => {
 		for (const url of urls) {
 			const result = await shortenUrl('http://api.example.com', url);
-			expect(result).toContain('http://api.example.com/api/redirect/')
+			expect(result).toContain('http://api.example.com/api/redirect/');
 		}
 	});
 

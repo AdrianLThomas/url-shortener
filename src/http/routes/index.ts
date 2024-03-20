@@ -7,7 +7,7 @@ import validation from '../validation';
 
 export default async (request: Request, db: DrizzleD1Database) => {
 	const { pathname, searchParams } = new URL(request.url);
-	console.log({request})
+	console.log({ request });
 
 	const url = searchParams.get('url')!;
 	const isValid = await validation(url);
