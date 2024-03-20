@@ -1,6 +1,7 @@
 name = "url-shortener"
 main = "src/index.ts"
 compatibility_date = "2024-03-04"
+route = { pattern = "api.adrian-thomas.com", custom_domain = true }
 
 # Variable bindings. These are arbitrary, plaintext strings (similar to environment variables)
 # Note: Use secrets to store sensitive data.
