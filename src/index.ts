@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { shortenUrl } from './shorten-url';
 import { urls } from './db/schema';
 import { eq } from 'drizzle-orm';
+import { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } from './responses';
 
 export interface Env {
 	DB: D1Database;
@@ -20,7 +21,7 @@ export default {
 
 		const isValidUrl = validatedUrl.success;
 		if (!isValidUrl) {
-			return new Response('Invalid url', { status: 400 });
+			return BAD_REQUEST('Invalid URL');
 		}
 
 		// TODO refactor routing
@@ -28,7 +29,7 @@ export default {
 			const [record] = await db.select().from(urls).where(eq(urls.short, validatedUrl.data))
 			
 			if (!record) {
-				return new Response('Not found', { status: 404 }); // TODO refactor for consistent responses
+				return NOT_FOUND();
 			}
 
 			return Response.redirect(record.long, 301);
@@ -49,10 +50,10 @@ export default {
 
 				return Response.json({ shortUrl });
 			} catch (e) {
-				return new Response('Server error', { status: 500 });
+				return SERVER_ERROR();
 			}
 		}
 
-		return new Response('Not found', { status: 404 });
+		return NOT_FOUND();
 	},
 };
