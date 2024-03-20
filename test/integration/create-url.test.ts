@@ -23,8 +23,8 @@ describe('Worker', () => {
 		const resp = await shortenUrl();
 		const text = await resp.json();
 
-		expect(text).toEqual({
-			shortUrl: 'OTk2Zm',
+		expect(text).toMatchObject({
+			shortUrl: expect.stringContaining('OTk2Zm'),
 		});
 		expect(resp.status).toBe(200);
 	});
@@ -60,8 +60,8 @@ describe('Worker', () => {
 		);
 		const text = await resp.json();
 
-		expect(text).toEqual({
-			shortUrl: 'NDE5ND',
+		expect(text).toMatchObject({
+			shortUrl: expect.stringContaining('NDE5ND'),
 		});
 		expect(resp.status).toBe(200);
 	});

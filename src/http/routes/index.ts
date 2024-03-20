@@ -5,16 +5,19 @@ import { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } from '../responses';
 import { DrizzleD1Database } from 'drizzle-orm/d1';
 import validation from '../validation';
 
-export default async (method: string, pathname: string, searchParams: URLSearchParams, db: DrizzleD1Database) => {
+export default async (request: Request, db: DrizzleD1Database) => {
+	const { pathname, searchParams } = new URL(request.url);
+	console.log({request})
+
 	const url = searchParams.get('url')!;
 	const isValid = await validation(url);
 	if (!isValid) {
 		return BAD_REQUEST('Invalid URL');
 	}
-
+	// TODO bug with short url
 	switch (pathname) {
 		case '/api/redirect': {
-			if (method !== 'GET') {
+			if (request.method !== 'GET') {
 				return NOT_FOUND();
 			}
 
@@ -27,12 +30,12 @@ export default async (method: string, pathname: string, searchParams: URLSearchP
 			return Response.redirect(record.long, 301);
 		}
 		case '/api/shorten': {
-			if (method !== 'POST') {
+			if (request.method !== 'POST') {
 				return NOT_FOUND();
 			}
 
 			const longUrl = new URL(url).toString();
-			const shortUrl = await shortenUrl(longUrl);
+			const shortUrl = await shortenUrl(request.headers.get('host')!, longUrl);
 
 			await db
 				.insert(urls)
