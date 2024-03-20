@@ -1,21 +1,36 @@
 import { shortenUrl } from '../../shorten-url';
 import { urls } from '../../db/schema';
 import { eq } from 'drizzle-orm';
-import { NOT_FOUND, SERVER_ERROR } from '../responses';
+import { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } from '../responses';
 import { DrizzleD1Database } from 'drizzle-orm/d1';
+import validation from '../validation';
 
-export default async (method: string, pathname: string, url: string, db: DrizzleD1Database) => {
-	// TODO refactor routing - switch case
-	if (method === 'GET' && pathname === '/api/redirect') {
-		const [record] = await db.select().from(urls).where(eq(urls.short, url));
+export default async (method: string, pathname: string, searchParams: URLSearchParams, db: DrizzleD1Database) => {
+	const url = searchParams.get('url')!;
+	const isValid = await validation(url);
+	if (!isValid) {
+		return BAD_REQUEST('Invalid URL');
+	}
 
-		if (!record) {
-			return NOT_FOUND();
+	switch (pathname) {
+		case '/api/redirect': {
+			if (method !== 'GET') {
+				return NOT_FOUND();
+			}
+
+			const [record] = await db.select().from(urls).where(eq(urls.short, url));
+
+			if (!record) {
+				return NOT_FOUND();
+			}
+
+			return Response.redirect(record.long, 301);
 		}
+		case '/api/shorten': {
+			if (method !== 'POST') {
+				return NOT_FOUND();
+			}
 
-		return Response.redirect(record.long, 301);
-	} else if (method === 'POST' && pathname === '/api/shorten') {
-		try {
 			const longUrl = new URL(url).toString();
 			const shortUrl = await shortenUrl(longUrl);
 
@@ -29,10 +44,8 @@ export default async (method: string, pathname: string, url: string, db: Drizzle
 				.run();
 
 			return Response.json({ shortUrl });
-		} catch (e) {
-			return SERVER_ERROR();
 		}
+		default:
+			return NOT_FOUND();
 	}
-
-	return NOT_FOUND();
 };
