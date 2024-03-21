@@ -1,27 +1,27 @@
-import { shortenUrl } from '../../shorten-url';
+import { generateToken } from '../../generate-token';
 import { urls } from '../../db/schema';
 import { eq } from 'drizzle-orm';
 import { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } from '../responses';
 import { DrizzleD1Database } from 'drizzle-orm/d1';
-import validation from '../validation';
+import { tokenValidation, urlValidation } from '../validation';
 
 export default async (request: Request, db: DrizzleD1Database) => {
 	const { pathname, searchParams } = new URL(request.url);
 	console.log({ request });
 
-	const url = searchParams.get('url')!;
-	const isValid = await validation(url);
-	if (!isValid) {
-		return BAD_REQUEST('Invalid URL');
-	}
-	// TODO bug with short url
 	switch (pathname) {
 		case '/api/redirect': {
 			if (request.method !== 'GET') {
 				return NOT_FOUND();
 			}
 
-			const [record] = await db.select().from(urls).where(eq(urls.short, url));
+			const token = searchParams.get('token')!;
+			const isValid = await tokenValidation(token); // todo support token validation
+			if (!isValid) {
+				return BAD_REQUEST('Invalid URL');
+			}
+
+			const [record] = await db.select().from(urls).where(eq(urls.short, token));
 
 			if (!record) {
 				return NOT_FOUND();
@@ -34,19 +34,25 @@ export default async (request: Request, db: DrizzleD1Database) => {
 				return NOT_FOUND();
 			}
 
+			const url = searchParams.get('url')!;
+			const isValid = await urlValidation(url);
+			if (!isValid) {
+				return BAD_REQUEST('Invalid URL');
+			}
+
 			const longUrl = new URL(url).toString();
-			const shortUrl = await shortenUrl(request.headers.get('host')!, longUrl);
+			const shortUrlToken = await generateToken(longUrl);
 
 			await db
 				.insert(urls)
 				.values({
 					long: longUrl,
-					short: shortUrl,
+					short: shortUrlToken,
 				})
 				.onConflictDoNothing()
 				.run();
 
-			return Response.json({ shortUrl });
+			return Response.json({ shortUrl: `${request.headers.get('host')}/api/redirect?url=${shortUrlToken}` });
 		}
 		default:
 			return NOT_FOUND();
