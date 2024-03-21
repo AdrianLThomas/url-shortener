@@ -11,7 +11,7 @@ describe('shortenUrl', () => {
 	];
 
 	it('should always return a string of length 6', async () => {
-		const prefix = 'http://api.example.com'
+		const prefix = 'http://api.example.com';
 		for (const url of urls) {
 			const result = await generateToken(url);
 			expect(result).toHaveLength(6);
