@@ -38,7 +38,7 @@ npm run db:generate # generates a migration script if you change the schema
 The architecture is simple, it consists of:
 
 - A CloudFlare Worker (serverless function, exposes a HTTP API)
-- Cloudflare D1 (SQLite serverless database: with automatic read replcias)
+- Cloudflare D1 (SQLite serverless database: with automatic read replicas)
 
 ## Shortfalls
 
