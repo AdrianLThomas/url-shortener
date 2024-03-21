@@ -23,8 +23,10 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run lint:check
-      - name: Setup DB & Run Tests
-        run: npm run db:init && npm test
+      - name: Initialise Database
+        run: npm run db:init
+      - name: Run All Tests
+        run: npm test
       - name: Build & Deploy Worker
         uses: cloudflare/wrangler-action@v3
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
