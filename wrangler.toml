@@ -54,5 +54,5 @@ route = { pattern = "api.adrian-thomas.com", custom_domain = true }
 
 [[d1_databases]]
 binding = "DB" # i.e. available in your Worker on env.DB
-database_name = "url-shortener"
-database_id = "99821c73-c638-413e-bc5d-a1364429ff68"
+database_name = "urls"
+database_id = "dd665acd-330d-4087-b014-d0630ab98576"

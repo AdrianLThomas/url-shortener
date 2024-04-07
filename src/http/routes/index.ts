@@ -52,7 +52,7 @@ export default async (request: Request, db: DrizzleD1Database) => {
 				.onConflictDoNothing()
 				.run();
 
-			return Response.json({ shortUrl: `${request.headers.get('host')}/api/redirect?url=${shortUrlToken}` });
+			return Response.json({ shortUrl: `${request.headers.get('host')}/api/redirect?token=${shortUrlToken}` });
 		}
 		default:
 			return NOT_FOUND();
