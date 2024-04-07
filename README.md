@@ -23,10 +23,10 @@ Also done via GitHub Actions. However if you want to deploy manually, you can do
 # Database
 
 ```bash
-npm run db:init # executes the migration script to setup the db
-npm run db:query # simple select statement against the DB
+npm run db:init:local # executes the migration script to setup the db
+npm run db:query:local # simple select statement against the DB
 
-# the above commands run locally due to the `--local` flag.
+# the above commands run locally due to the `--local` flag. There's also the remote equivalents.
 
 npm run db:generate # generates a migration script if you change the schema
 ```
